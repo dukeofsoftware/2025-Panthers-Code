@@ -1,0 +1,61 @@
+
+package frc.robot.subsystems.swerve;
+
+import com.pathplanner.lib.util.PIDConstants;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import org.littletonrobotics.junction.AutoLog;
+
+public interface IO_SwerveBase {
+
+	@AutoLog
+	public static class SwerveInputs {
+		public Pose2d pose = new Pose2d();
+		public Rotation2d yaw = new Rotation2d();
+		public Rotation2d odometryHeading = new Rotation2d();
+	}
+
+	/**
+	 * Updates the inputs with the current values.
+	 *
+	 * @param inputs The inputs to update.
+	 */
+	void updateInputs(SwerveInputs inputs);
+
+	void drive(
+			Translation2d translation, double rotation, boolean isFieldRelative, boolean isOpenLoop);
+
+	double getMaximumVelocity();
+
+	double getMaximumAngularVelocity();
+
+	void updateOdometry();
+
+	void resetOdometry(Pose2d pose);
+
+	Pose2d getPose();
+
+	Rotation2d getHeading();
+
+	ChassisSpeeds getRobotVelocity();
+
+	void setChassisSpeeds(ChassisSpeeds chassisSpeeds);
+
+	PIDConstants getHeadingPID();
+
+	double getConfigurationRadius();
+
+	void setBrakeMode(boolean isBrakeMode);
+
+	void setZero();
+
+	void setLock();
+
+	void setDriveMotorCurrentLimit(int currentLimit);
+
+	void setTurnMotorCurrentLimit(int currentLimit);
+
+	public Rotation2d getYaw();
+}
