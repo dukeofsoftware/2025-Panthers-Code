@@ -7,6 +7,8 @@ package frc.robot;
 
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+
 
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,13 +22,38 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotInit() {
-    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    Logger.start();
-
     m_robotContainer = new RobotContainer();
-      for (int port = 5800; port <= 5809; port++) {
+
+
+
+    Logger.recordMetadata("Maven Name", BuildConstants.MAVEN_NAME);
+		Logger.recordMetadata("Git SHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("Build Date", BuildConstants.BUILD_DATE);
+
+	if (Constants.CURRENT_MODE == Constants.RobotMode.REAL) {
+	
+			Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+
+		} else {
+			setUseTiming(false); // Run as fast as possible
+			/* FOR LOG REPLAY
+			String logPath =
+					LogFileUtil
+							.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+			Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+			Logger.addDataReceiver(
+					new WPILOGWriter(
+							LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+			*/
+			Logger.addDataReceiver(new NT4Publisher());
+         for (int port = 5800; port <= 5809; port++) {
             PortForwarder.add(port, "limelight.local", port);
         }
+		}
+
+		Logger.start();
+
+   
   }
 
   @Override
@@ -71,6 +98,10 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+
+    m_robotContainer.logMetadata();
+
   }
 
   @Override

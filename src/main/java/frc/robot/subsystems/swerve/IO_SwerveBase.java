@@ -1,12 +1,15 @@
 
 package frc.robot.subsystems.swerve;
 
-import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import swervelib.SwerveController;
+
 import org.littletonrobotics.junction.AutoLog;
+
+import com.pathplanner.lib.util.PIDConstants;
 
 public interface IO_SwerveBase {
 
@@ -17,45 +20,49 @@ public interface IO_SwerveBase {
 		public Rotation2d odometryHeading = new Rotation2d();
 	}
 
-	/**
-	 * Updates the inputs with the current values.
-	 *
-	 * @param inputs The inputs to update.
-	 */
 	void updateInputs(SwerveInputs inputs);
 
-	void drive(
-			Translation2d translation, double rotation, boolean isFieldRelative, boolean isOpenLoop);
+  Rotation2d  getOdometryHeading();
 
-	double getMaximumVelocity();
-
-	double getMaximumAngularVelocity();
-
-	void updateOdometry();
-
-	void resetOdometry(Pose2d pose);
-
-	Pose2d getPose();
-
-	Rotation2d getHeading();
-
-	ChassisSpeeds getRobotVelocity();
-
-	void setChassisSpeeds(ChassisSpeeds chassisSpeeds);
+  SwerveController  getSwerveController();
 
 	PIDConstants getHeadingPID();
 
-	double getConfigurationRadius();
+  double getConfigurationRadius();
 
-	void setBrakeMode(boolean isBrakeMode);
+  void drive(Translation2d translation, double rotation, boolean isFieldRelative, boolean isOpenLoop);  
+  void driveFieldOriented(ChassisSpeeds velocity);
+        
+  void resetOdometry(Pose2d initialHolonomicPose);
+  
+  Pose2d getPose();
+  
+  void setChassisSpeeds(ChassisSpeeds chassisSpeeds);
+  
+  void setZero();
 
-	void setZero();
+  void zeroGyro();
 
-	void setLock();
+  void setMotorBrake(boolean brake);
+  
+  ChassisSpeeds getFieldVelocity();
+  
+  ChassisSpeeds getRobotVelocity();
+  
+  Rotation2d getHeading();
+  
+  Rotation2d getYaw();
 
-	void setDriveMotorCurrentLimit(int currentLimit);
+  void lock();
 
-	void setTurnMotorCurrentLimit(int currentLimit);
+  double getMaxVelocity();
 
-	public Rotation2d getYaw();
+  double getMaxAngularVelocity();
+
+  boolean isAllianceBlue();
+  
+
+void updateVisionOdometry();
+
+public double getMaximumAngularVelocity() ;
 }
